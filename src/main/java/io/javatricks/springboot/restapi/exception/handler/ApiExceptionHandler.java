@@ -41,6 +41,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		// print exception
 		this.exceptionLogger(ex);
 
+		// build error response
 		apiErrorResponse = new ApiErrorResponse(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST,
 				ex.getMessage());
 
@@ -63,6 +64,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		builder.append(" media type is not supported. Supported media types are ");
 		ex.getSupportedMediaTypes().forEach(t -> builder.append(t).append(", "));
 
+		// build error response
 		apiErrorResponse = new ApiErrorResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(),
 				HttpStatus.UNSUPPORTED_MEDIA_TYPE, builder.substring(0, builder.length() - 2));
 
@@ -83,6 +85,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		List<String> errors = ex.getBindingResult().getFieldErrors().stream().map(x -> x.getDefaultMessage())
 				.collect(Collectors.toList());
 
+		// build error response
 		apiErrorResponse = new ApiErrorResponse(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, errors.get(0));
 
 		return buildResponseEntity(apiErrorResponse, HttpStatus.BAD_REQUEST);
@@ -99,6 +102,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		// print exception
 		this.exceptionLogger(ex);
 
+		// build error response
 		String errorMessage = "Request body is either malformed or incorrect.";
 		apiErrorResponse = new ApiErrorResponse(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, errorMessage);
 
@@ -111,8 +115,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		// print exception
 		this.exceptionLogger(ex);
 
+		// build error response
 		apiErrorResponse = new ApiErrorResponse(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND, ex.getMessage());
-		return new ResponseEntity<>(apiErrorResponse, HttpStatus.NOT_FOUND);
+		return buildResponseEntity(apiErrorResponse, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(BadRequestException.class)
@@ -121,9 +126,23 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		// print exception
 		this.exceptionLogger(ex);
 
+		// build error response
 		apiErrorResponse = new ApiErrorResponse(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST,
 				ex.getMessage());
-		return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
+		return buildResponseEntity(apiErrorResponse, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<?> illegalArgumentException(IllegalArgumentException ex) {
+
+		// print exception
+		this.exceptionLogger(ex);
+
+		// build error response
+		apiErrorResponse = new ApiErrorResponse(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST,
+				ex.getMessage());
+
+		return buildResponseEntity(apiErrorResponse, HttpStatus.BAD_REQUEST);
 	}
 
 	private ResponseEntity<Object> buildResponseEntity(ApiErrorResponse apiErrorResponse, HttpStatus httpStatus) {
