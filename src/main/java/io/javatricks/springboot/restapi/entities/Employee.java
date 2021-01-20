@@ -26,7 +26,7 @@ public class Employee {
 	private String lastName;
 
 	@NotBlank(message = "Email is mandatory")
-	@Column(name = "email")
+	@Column(name = "email", unique = true)
 	private String email;
 
 	@Column(name = "salary")
