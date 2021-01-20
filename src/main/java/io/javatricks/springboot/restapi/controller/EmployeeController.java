@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -25,6 +26,7 @@ import io.javatricks.springboot.restapi.exception.handler.ResourceNotFoundExcept
 import io.javatricks.springboot.restapi.service.EmployeeService;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class EmployeeController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeController.class);
 
@@ -78,7 +80,7 @@ public class EmployeeController {
 	public @ResponseBody ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
 
 		LOGGER.info("@@@ request ==> " + id);
-		
+
 		return new ResponseEntity<>(employeeService.delete(id), HttpStatus.OK);
 	}
 
