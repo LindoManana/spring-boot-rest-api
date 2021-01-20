@@ -2,7 +2,7 @@ package io.javatricks.springboot.restapi.dto;
 
 public class EmployeeDTO {
 
-	private long id;
+	private Long id;
 
 	private String firstName;
 
@@ -10,13 +10,15 @@ public class EmployeeDTO {
 
 	private String email;
 
+	private Double salary;
+
 	private Long phoneNo;
 
 	public EmployeeDTO() {
 		super();
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
@@ -32,7 +34,15 @@ public class EmployeeDTO {
 		return email;
 	}
 
-	public void setId(long id) {
+	public Double getSalary() {
+		return salary;
+	}
+
+	public Long getPhoneNo() {
+		return phoneNo;
+	}
+
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -48,18 +58,12 @@ public class EmployeeDTO {
 		this.email = email;
 	}
 
-	public Long getPhoneNo() {
-		return phoneNo;
+	public void setSalary(Double salary) {
+		this.salary = salary;
 	}
 
 	public void setPhoneNo(Long phoneNo) {
 		this.phoneNo = phoneNo;
-	}
-
-	@Override
-	public String toString() {
-		return "Employee [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
-				+ ", phoneNo=" + phoneNo + "]";
 	}
 
 }

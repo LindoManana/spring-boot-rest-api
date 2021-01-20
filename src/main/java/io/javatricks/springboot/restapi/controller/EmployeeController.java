@@ -1,15 +1,13 @@
 package io.javatricks.springboot.restapi.controller;
 
-import java.lang.reflect.InvocationTargetException;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -19,52 +17,52 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.javatricks.springboot.restapi.dto.EmployeeDTO;
 import io.javatricks.springboot.restapi.entities.Employee;
-import io.javatricks.springboot.restapi.exception.BadRequestException;
-import io.javatricks.springboot.restapi.exception.ResourceNotFoundException;
+import io.javatricks.springboot.restapi.exception.handler.ResourceNotFoundException;
 import io.javatricks.springboot.restapi.service.EmployeeService;
 
 @RestController
 public class EmployeeController {
 
 	@Autowired
-	EmployeeService employeeService;
+	private EmployeeService employeeService;
 
-	@GetMapping("/employees")
-	public @ResponseBody ResponseEntity<?> getAllEmployees() {
-
-		return new ResponseEntity<>(employeeService.getAllEmployees(), HttpStatus.OK);
+	@PostMapping("/employees")
+	public @ResponseBody ResponseEntity<?> save(@Valid @RequestBody Employee employee) {
+		return new ResponseEntity<>(employeeService.save(employee), HttpStatus.CREATED);
 	}
 
 	@GetMapping("/employees/{id}")
-	public @ResponseBody ResponseEntity<?> getEmployeeById(@PathVariable(value = "id") Long employeeId)
+	public @ResponseBody ResponseEntity<?> findById(@PathVariable(value = "id") Long id)
 			throws ResourceNotFoundException {
-		Employee employee = employeeService.getEmployeeById(employeeId);
+		Employee employee = employeeService.findById(id);
 		return new ResponseEntity<>(employee, HttpStatus.OK);
 
 	}
 
-	@PostMapping("/employees")
-	public @ResponseBody ResponseEntity<?> createEmployee(@Valid @RequestBody Employee employee,
-			BindingResult bindingResult) throws BadRequestException {
-		if (bindingResult.hasErrors()) {
-			throw new BadRequestException(bindingResult.getFieldError().getDefaultMessage());
+	@GetMapping("/employees")
+	public @ResponseBody ResponseEntity<?> findAll() {
 
-		}
-		return new ResponseEntity<>(employeeService.createEmployee(employee), HttpStatus.CREATED);
+		return new ResponseEntity<>(employeeService.findAll(), HttpStatus.OK);
 	}
 
 	@PutMapping("/employees")
-	public @ResponseBody ResponseEntity<?> updateEmployee(@RequestBody EmployeeDTO employeeDetails)
-			throws ResourceNotFoundException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+	public @ResponseBody ResponseEntity<?> update(@Valid @RequestBody Employee employee)
+			throws ResourceNotFoundException {
 
-		return new ResponseEntity<>(employeeService.updateEmployee(employeeDetails), HttpStatus.OK);
+		return new ResponseEntity<>(employeeService.update(employee), HttpStatus.OK);
+	}
+
+	@PatchMapping("/employees")
+	public @ResponseBody ResponseEntity<?> patch(@RequestBody EmployeeDTO employeeDTO)
+			throws ResourceNotFoundException {
+
+		return new ResponseEntity<>(employeeService.patch(employeeDTO), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/employees/{id}")
-	public @ResponseBody ResponseEntity<?> deleteEmployee(@PathVariable(value = "id") Long employeeId)
-			throws Exception {
+	public @ResponseBody ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
 
-		return new ResponseEntity<>(employeeService.deleteEmployee(employeeId), HttpStatus.OK);
+		return new ResponseEntity<>(employeeService.delete(id), HttpStatus.OK);
 	}
 
 }

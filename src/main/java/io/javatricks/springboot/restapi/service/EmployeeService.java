@@ -1,57 +1,60 @@
 package io.javatricks.springboot.restapi.service;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.javatricks.springboot.restapi.dto.EmployeeDTO;
 import io.javatricks.springboot.restapi.entities.Employee;
-import io.javatricks.springboot.restapi.exception.ResourceNotFoundException;
+import io.javatricks.springboot.restapi.exception.handler.ResourceNotFoundException;
+import io.javatricks.springboot.restapi.mapper.EmployeeMapper;
 import io.javatricks.springboot.restapi.repository.EmployeeRepository;
-import io.javatricks.springboot.restapi.utilities.AppUtils;
 
 @Service
 public class EmployeeService {
 
 	@Autowired
-	EmployeeRepository employeeRepository;
+	private EmployeeRepository employeeRepository;
 
-	public List<Employee> getAllEmployees() {
+	@Autowired
+	EmployeeMapper employeeMapper;
+
+	public Employee save(Employee employee) {
+		return employeeRepository.save(employee);
+	}
+
+	public List<Employee> findAll() {
 		return employeeRepository.findAll();
 	}
 
-	public Employee getEmployeeById(Long employeeId) throws ResourceNotFoundException {
-		Employee employee = employeeRepository.findById(employeeId)
-				.orElseThrow(() -> new ResourceNotFoundException("Employee not found with Id :: " + employeeId));
+	public Employee findById(Long id) throws ResourceNotFoundException {
+		Employee employee = employeeRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee not found with id :: " + id));
 		return employee;
 	}
 
-	public Employee createEmployee(Employee employee) {
-		return employeeRepository.save(employee);
-	}
+	public Employee update(Employee employee) throws ResourceNotFoundException {
 
-	public Employee updateEmployee(EmployeeDTO employeeDetails)
-			throws ResourceNotFoundException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		Employee employee = employeeRepository.findById(employeeDetails.getId()).orElseThrow(
-				() -> new ResourceNotFoundException("Employee not found with Id :: " + employeeDetails.getId()));
-
-		BeanUtils.copyProperties(employeeDetails, employee, AppUtils.getNullPropertyNames(employeeDetails));
+		this.findById(employee.getId());
 
 		return employeeRepository.save(employee);
 	}
 
-	public Map<String, Boolean> deleteEmployee(Long employeeId) throws Exception {
-		Employee employee = employeeRepository.findById(employeeId)
-				.orElseThrow(() -> new ResourceNotFoundException("Employee not found with Id :: " + employeeId));
+	public Employee patch(EmployeeDTO employeeDTO) throws ResourceNotFoundException {
+
+		Employee employee = this.findById(employeeDTO.getId());
+
+		employee = employeeMapper.employeeFromDto(employeeDTO, employee);
+
+		return employeeRepository.save(employee);
+	}
+
+	public String delete(Long id) {
+		Employee employee = this.findById(id);
 		employeeRepository.delete(employee);
-		Map<String, Boolean> response = new HashMap<>();
-		response.put("deleted", Boolean.TRUE);
-		return response;
+		String msg = "Employee deleted successfully";
+		return msg;
 	}
 
 }

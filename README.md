@@ -1,35 +1,37 @@
 # spring-boot-rest-api
-RESTful web service using Spring Boot.
+CRUD (Create, Read, Update, and Delete) RESTful API using Spring Boot.
 
 ### Setup Steps
 **1. Clone the application**
 
 ```bash
-https://github.com/LindoManana/spring-boot-rest-api.git
+git clone https://github.com/LindoManana/spring-boot-rest-api.git
 ```
 
 **2. Build and run the app using maven**
 
 ```bash
+mvn clean install
 mvn spring-boot:run
 ```
 
-The app will start running at <http://localhost:8080>.
+The applicaton will start running at <http://localhost:8080>.
 
 ###  Explore Rest APIs
-The app defines the following CRUD APIs:
+The applicaton defines the following CRUD APIs:
 
-    GET /employees (Fetch all employees)
-    
     POST /employees (Create an employee)
     
     GET /employees/{employeeId} (Fetch an employee by id)
+    
+    GET /employees (Fetch all employees)
     
     PUT /employees/{employeeId} (Update an employee)
     
     DELETE /employees/{employeeId} (Delete an employee)
 
-###  Built With
+###  Built With / References
 
 * [Spring Boot](https://spring.io/projects/spring-boot) - Java-based framework
-* [Maven](https://maven.apache.org/) - Dependency Management
+* [Maven](https://maven.apache.org/) - Dependency management
+* [MapStruct](https://mapstruct.org/) - Java Bean mapper

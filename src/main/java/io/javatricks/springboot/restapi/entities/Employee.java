@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "Employees")
@@ -14,7 +15,7 @@ public class Employee {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private Long id;
 
 	@NotBlank(message = "First name is mandatory")
 	@Column(name = "first_name")
@@ -28,6 +29,10 @@ public class Employee {
 	@Column(name = "email")
 	private String email;
 
+	@Column(name = "salary")
+	private Double salary;
+
+	@NotNull(message = "Phone no is mandatory")
 	@Column(name = "phone_no")
 	private Long phoneNo;
 
@@ -35,7 +40,7 @@ public class Employee {
 		super();
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
@@ -51,11 +56,15 @@ public class Employee {
 		return email;
 	}
 
+	public Double getSalary() {
+		return salary;
+	}
+
 	public Long getPhoneNo() {
 		return phoneNo;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -71,14 +80,12 @@ public class Employee {
 		this.email = email;
 	}
 
-	public void setPhoneNo(Long phoneNo) {
-		this.phoneNo = phoneNo;
+	public void setSalary(Double salary) {
+		this.salary = salary;
 	}
 
-	@Override
-	public String toString() {
-		return "Employee [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
-				+ ", phoneNo=" + phoneNo + "]";
+	public void setPhoneNo(Long phoneNo) {
+		this.phoneNo = phoneNo;
 	}
 
 }
