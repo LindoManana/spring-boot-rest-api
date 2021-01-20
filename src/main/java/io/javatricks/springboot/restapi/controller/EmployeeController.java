@@ -21,13 +21,12 @@ import com.google.gson.Gson;
 
 import io.javatricks.springboot.restapi.dto.EmployeeDTO;
 import io.javatricks.springboot.restapi.entities.Employee;
-import io.javatricks.springboot.restapi.exception.handler.ApiExceptionHandler;
 import io.javatricks.springboot.restapi.exception.handler.ResourceNotFoundException;
 import io.javatricks.springboot.restapi.service.EmployeeService;
 
 @RestController
 public class EmployeeController {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ApiExceptionHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeController.class);
 
 	@Autowired
 	private EmployeeService employeeService;
