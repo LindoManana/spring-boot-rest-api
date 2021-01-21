@@ -3,6 +3,7 @@ package io.javatricks.springboot.restapi.exception.handler;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -109,6 +111,24 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		return buildResponseEntity(apiErrorResponse, HttpStatus.BAD_REQUEST);
 	}
 
+	/**
+	 * Triggered by 405 Method Not Allowed.
+	 **/
+
+	@Override
+	protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		// print exception
+		this.exceptionLogger(ex);
+
+		// build error response
+
+		apiErrorResponse = new ApiErrorResponse(HttpStatus.METHOD_NOT_ALLOWED.value(), HttpStatus.METHOD_NOT_ALLOWED,
+				ex.getMessage());
+
+		return buildResponseEntity(apiErrorResponse, HttpStatus.METHOD_NOT_ALLOWED);
+	}
+
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<?> resourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
 
@@ -143,6 +163,32 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 				ex.getMessage());
 
 		return buildResponseEntity(apiErrorResponse, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(ExecutionException.class)
+	public ResponseEntity<?> executionException(ExecutionException ex) {
+
+		// print exception
+		this.exceptionLogger(ex);
+
+		// build error response
+		apiErrorResponse = new ApiErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+				HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+
+		return buildResponseEntity(apiErrorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@ExceptionHandler(InterruptedException.class)
+	public ResponseEntity<?> interruptedException(InterruptedException ex) {
+
+		// print exception
+		this.exceptionLogger(ex);
+
+		// build error response
+		apiErrorResponse = new ApiErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+				HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+
+		return buildResponseEntity(apiErrorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	private ResponseEntity<Object> buildResponseEntity(ApiErrorResponse apiErrorResponse, HttpStatus httpStatus) {
